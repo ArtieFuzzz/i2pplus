@@ -1534,7 +1534,7 @@ public class I2PTunnelHTTPClient extends I2PTunnelHTTPClientBase implements Runn
         String header = getErrorPage("ahelper-new", ERR_AHELPER_NEW);
         out.write(header);
         out.write("<table id=proxyNewHost>\n<tr><td class=right>" + _t("Host") +
-                "</td><td>" + idn + "</td></tr>\n");
+                "</td><td>" + DataHelper.escapeHTML(idn) + "</td></tr>\n");
         try {
             String b32 = Base32.encode(SHA256Generator.getInstance().calculateHash(Base64.decode(ahelperKey)).getData());
             out.write("<tr><td class=right>" + _t("Base32") + "</td>" +
@@ -1546,22 +1546,21 @@ public class I2PTunnelHTTPClient extends I2PTunnelHTTPClientBase implements Runn
 
                   // FIXME if there is a query remaining it is lost
                   "<form method=GET action=\"" + targetRequest + "\">\n<hr>\n<div class=option>" +
-                  "<h4>" + _t("Continue to {0} without saving", idn) + "</h4>\n<p>" +
+                  "<h4>" + _t("Continue to {0} without saving", DataHelper.escapeHTML(idn)) + "</h4>\n<p>" +
                   _t("You can browse to the site without saving it to the addressbook. The address will be remembered until you restart your I2P router.") +
                   "</p>\n<div class=formaction><button type=submit class=go>" + _t("Continue without saving") + "</button></div>" + "\n</div>\n</form>\n" +
 
                   "<form method=GET action=\"http://" + LOCAL_SERVER + "/add\">\n" +
-                  "<input type=hidden name=\"host\" value=\"" + destination + "\">\n" +
+                  "<input type=hidden name=\"host\" value=\"" + DataHelper.escapeHTML(destination) + "\">\n" +
                   "<input type=hidden name=\"dest\" value=\"" + ahelperKey + "\">\n" +
                   "<input type=hidden name=\"nonce\" value=\"" + _proxyNonce + "\">\n" +
 
-                  "<hr>\n<div class=option>\n<h4>" + _t("Save {0} to router address book and continue to website", destination) + "</h4>\n<p>" +
+                  "<hr>\n<div class=option>\n<h4>" + _t("Save {0} to router address book and continue to website", DataHelper.escapeHTML(destination)) + "</h4>\n<p>" +
                   _t("This address will be saved to your Router addressbook where your subscription-based addresses are stored."));
 
         if (_context.namingService().getName().equals("BlockfileNamingService")) {
             out.write(" " + _t("If you want to keep track of sites you have added manually, add to your Master or Private addressbook instead."));
         }
-        // FIXME wasn't escaped
         String label = _t("Save & continue").replace("&", "&amp;");
         out.write("</p>\n<div class=formaction><button type=submit class=accept name=\"router\" value=\"router\">" +
                   label + "</button></div>\n</div>\n");
@@ -1569,13 +1568,13 @@ public class I2PTunnelHTTPClient extends I2PTunnelHTTPClientBase implements Runn
         if (_context.namingService().getName().equals("BlockfileNamingService")) {
             // only blockfile supports multiple books
 
-            out.write("<hr>\n<div class=option>\n<h4>" + _t("Save {0} to master addressbook and continue to website", idn) + "</h4>\n<p>" +
+            out.write("<hr>\n<div class=option>\n<h4>" + _t("Save {0} to master addressbook and continue to website", DataHelper.escapeHTML(idn)) + "</h4>\n<p>" +
                       _t("This address will be saved to your Master addressbook. Select this option for addresses you wish to keep separate from the main " +
                       "router address book, but don't mind publishing.") +
                       "</p>\n<div class=formaction><button type=submit class=accept name=\"master\" value=\"master\">" +
                       label + "</button></div>\n</div>\n");
 
-            out.write("<hr>\n<div class=option><h4>" + _t("Save {0} to private addressbook and continue to website", idn) + "</h4>\n<p>" +
+            out.write("<hr>\n<div class=option><h4>" + _t("Save {0} to private addressbook and continue to website", DataHelper.escapeHTML(idn)) + "</h4>\n<p>" +
                       _t("This address will be saved to your Private addressbook, ensuring it is never published.") +
                       "</p>\n<div class=formaction><button type=submit class=accept name=\"private\" value=\"private\">" +
                       label + "</button></div>\n</div>\n");
@@ -1637,7 +1636,6 @@ public class I2PTunnelHTTPClient extends I2PTunnelHTTPClientBase implements Runn
                       "<input type=text size=55 name=\"secret\" value=\"\">\n");
         }
 
-        // FIXME wasn't escaped
         String label = _t("Save & continue").replace("&", "&amp;");
         out.write("<div class=formaction>\n" + "<button type=submit class=accept name=action value=Save>" +
                   label + "</button>\n" + "</div>\n</form>\n</div>\n");
