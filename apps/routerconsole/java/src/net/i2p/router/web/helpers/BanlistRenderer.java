@@ -439,7 +439,7 @@ class BanlistRenderer {
                 countryCode = "xx";
             }
 
-String countryName =  _context.commSystem().getCountryName(countryCode);
+            String countryName =  _context.commSystem().getCountryName(countryCode);
             // Get router version from NetDB or reason, then clean reason
             String routerVersion = getRouterVersion(key, reason);
             String cleanedReason = cleanReason(reason, routerVersion);
