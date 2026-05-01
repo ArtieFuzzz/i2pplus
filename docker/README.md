@@ -184,6 +184,10 @@ docker restart i2pplus
 
 #### Clean up Docker resources
 ```bash
+# Use the cleanup script (recommended)
+./docker/cleanup.sh --all
+
+# Or manually:
 # Remove stopped containers
 docker container prune -f
 
@@ -195,6 +199,11 @@ docker volume prune -f
 
 # Full cleanup
 docker system prune -a -f
+```
+
+The `cleanup.sh` script provides an interactive way to clean up specific resources:
+```bash
+./docker/cleanup.sh --help
 ```
 
 ---
