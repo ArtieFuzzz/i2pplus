@@ -1057,12 +1057,19 @@ class InboundEstablishState extends EstablishBase implements NTCP2Payload.Payloa
                 }
             }
         } catch (IllegalArgumentException iae) {
-            // Sets _msg3p2FailReason
             ok = verifyInboundNetworkID(ri);
             if (!ok) {throw new DataFormatException("NTCP2 network ID mismatch");}
-            // Generally expired/future RI - don't change reason if already set as clock skew
+            reason = iae.getMessage();
+            if (reason != null && reason.contains("Invalid NetDbStore attempt - ")) {
+                reason = reason.substring(reason.indexOf("Invalid NetDbStore attempt - ") + 27);
+            } else {
+                reason = "Unknown";
+            }
+            if (_log.shouldWarn()) {
+                _log.warn("[NTCP] RouterInfo store failed for [" + h.toBase64().substring(0,6) + "]: " + reason);
+            }
             if (_msg3p2FailReason <= 0) {_msg3p2FailReason = NTCPConnection.REASON_MSG3;}
-            throw new DataFormatException("RouterInfo store fail: " + ri, iae);
+            throw new DataFormatException("RouterInfo rejected: " + reason + " - " + ri, iae);
         }
         _con.setRemotePeer(_aliceIdent);
     }

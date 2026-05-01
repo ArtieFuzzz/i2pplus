@@ -2296,27 +2296,43 @@ public class CommSystemFacadeImpl extends CommSystemFacade {
     }
 
     /** Cache for reverse DNS lookups - small since we rely on file-backed rdnsCache */
-    private final ConcurrentHashMap<String, String> reverseLookupCache = new ConcurrentHashMap<>(50);
+    private final Map<String, String> reverseLookupCache = Collections.synchronizedMap(new LHMCache<>(50));
 
     // Cache RouterInfo and Capacity to improve repeated lookup efficiency
-    private final ConcurrentHashMap<Hash, RouterInfo> routerInfoCache = new ConcurrentHashMap<>(5000);
-    private final ConcurrentHashMap<Hash, String> capacityCache = new ConcurrentHashMap<>(5000);
+    private final Map<Hash, RouterInfo> routerInfoCache = Collections.synchronizedMap(new LHMCache<>(5000));
+    private final Map<Hash, String> capacityCache = Collections.synchronizedMap(new LHMCache<>(5000));
 
     private RouterInfo getRouterInfoCached(Hash peer) {
-        return routerInfoCache.computeIfAbsent(peer, p -> (RouterInfo) _context.netDb().lookupLocallyWithoutValidation(p));
+        RouterInfo rv = routerInfoCache.get(peer);
+        if (rv == null) {
+            rv = (RouterInfo) _context.netDb().lookupLocallyWithoutValidation(peer);
+            if (rv != null)
+                routerInfoCache.put(peer, rv);
+        }
+        return rv;
     }
 
     private String getCapacityCached(Hash peer) {
-        return capacityCache.computeIfAbsent(peer, p -> {
-            RouterInfo ri = getRouterInfoCached(p);
-            if (ri == null) return "?";
-            String caps = ri.getCapabilities();
-            for (int i = 0; i < RouterInfo.BW_CAPABILITY_CHARS.length(); i++) {
-                char c = RouterInfo.BW_CAPABILITY_CHARS.charAt(i);
-                if (caps.indexOf(c) >= 0) return String.valueOf(c);
+        String rv = capacityCache.get(peer);
+        if (rv == null) {
+            RouterInfo ri = getRouterInfoCached(peer);
+            if (ri == null) {
+                rv = "?";
+            } else {
+                String caps = ri.getCapabilities();
+                for (int i = 0; i < RouterInfo.BW_CAPABILITY_CHARS.length(); i++) {
+                    char c = RouterInfo.BW_CAPABILITY_CHARS.charAt(i);
+                    if (caps.indexOf(c) >= 0) {
+                        rv = String.valueOf(c);
+                        break;
+                    }
+                }
+                if (rv == null)
+                    rv = "?";
             }
-            return "?";
-        });
+            capacityCache.put(peer, rv);
+        }
+        return rv;
     }
 
     /**
