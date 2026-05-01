@@ -18,6 +18,7 @@ class ConnThrottler {
     private volatile int _max;
     private volatile int _totalMax;
     private final AtomicInteger _currentTotal;
+    private final Cleaner _cleaner;
 
     /*
      * @param max per-peer, 0 for unlimited
@@ -29,12 +30,18 @@ class ConnThrottler {
         _totalMax = totalMax;
         this.counter = new ObjectCounter<Hash>();
         _currentTotal = new AtomicInteger();
-        // shorten the initial period by a random amount
-        // to prevent correlation across destinations
-        // and identification of router startup time
-        timer.addPeriodicEvent(new Cleaner(),
-                               (period / 2) + RandomSource.getInstance().nextLong(period / 2),
-                               period);
+        // Only schedule cleanup if we have at least one limit set
+        if (max > 0 || totalMax > 0) {
+            // shorten the initial period by a random amount
+            // to prevent correlation across destinations
+            // and identification of router startup time
+            _cleaner = new Cleaner();
+            timer.addPeriodicEvent(_cleaner,
+                                   (period / 2) + RandomSource.getInstance().nextLong(period / 2),
+                                   period);
+        } else {
+            _cleaner = null;
+        }
     }
 
     /*

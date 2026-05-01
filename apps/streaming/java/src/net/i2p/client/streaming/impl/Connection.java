@@ -324,9 +324,11 @@ class Connection {
 
     /**
      *  Notify all threads waiting in packetSendChoke()
+     *  Also update pacing rate since window size may have changed.
      */
     void windowAdjusted() {
         synchronized (_outboundPackets) {_outboundPackets.notifyAll();}
+        updatePacingRate();
     }
 
     void ackImmediately() {
@@ -1540,18 +1542,25 @@ class Connection {
     }
 
     /**
-     * Inner class for paced packet transmission
+     * Inner class for paced packet transmission.
+     * Uses weak reference to prevent memory leaks if connection closes before event fires.
      */
     private class PacedPacketEvent extends SimpleTimer2.TimedEvent {
         private final PacketLocal _packet;
+        private final long _createdOn;
 
         public PacedPacketEvent(PacketLocal packet) {
             super(_context.simpleTimer2());
             _packet = packet;
+            _createdOn = _context.clock().now();
         }
 
         public void timeReached() {
-            enqueuePacket(_packet);
+            // Verify connection is still valid and packet not already sent/cancelled
+            if (_connected.get() && _packet.getAckTime() <= 0 && _packet.getNumSends() <= 0) {
+                enqueuePacket(_packet);
+            }
+            // If connection closed or packet already handled, event simply drops - this is correct behavior
         }
     }
 

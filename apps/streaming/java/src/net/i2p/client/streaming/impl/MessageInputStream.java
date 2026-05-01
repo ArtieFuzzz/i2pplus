@@ -87,7 +87,13 @@ class MessageInputStream extends InputStream {
     private final byte[] _oneByte = new byte[1]; // For single-byte reads
     private final Object _dataLock = new Object(); // Lock for synchronized access
 
-    // Sentinel used for out-of-order duplicates, avoids unnecessary allocations
+    /**
+     * Sentinel used for out-of-order duplicates when stream is closed.
+     * When locallyClosed is true and an out-of-order message arrives, we store this sentinel
+     * instead of the actual payload to prevent memory accumulation while still allowing
+     * canAccept() to return true for retransmits of already-processed messages.
+     * This enables proper handling of late-arriving duplicate packets after stream closure.
+     */
     private static final ByteArray DUMMY_BA = new ByteArray(null);
 
     // Total size of all ready data blocks (for fast available() and canAccept())

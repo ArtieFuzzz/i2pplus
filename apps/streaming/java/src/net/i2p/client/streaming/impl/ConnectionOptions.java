@@ -431,17 +431,8 @@ class ConnectionOptions extends I2PSocketOptionsImpl {
         setInactivityTimeout(getInt(opts, PROP_INACTIVITY_TIMEOUT, DEFAULT_INACTIVITY_TIMEOUT));
         setInactivityAction(getInt(opts, PROP_INACTIVITY_ACTION, DEFAULT_INACTIVITY_ACTION));
 
-        // Calculate minimum required inbound buffer size to accommodate full window
-        // Use 1.5*maxWindowSize to handle dynamic window growth while keeping memory usage sane
-        int minRequiredBufferSize = getMaxMessageSize() * ((3 * getMaxWindowSize()) / 2 + 2);
-        setInboundBufferSize(minRequiredBufferSize);
-
-        // Validate buffer size is sufficient for window size
-        if (_inboundBufferSize < minRequiredBufferSize) {
-            _log.warn("Inbound buffer size (" + _inboundBufferSize + ") is too small for window size (" +
-                     getMaxWindowSize() + "). Adjusting to " + minRequiredBufferSize + " bytes");
-            setInboundBufferSize(minRequiredBufferSize);
-        }
+        // Calculate and set minimum required inbound buffer size
+        initializeInboundBufferSize();
 
         setCongestionAvoidanceGrowthRateFactor(getInt(opts, PROP_CONGESTION_AVOIDANCE_GROWTH_RATE_FACTOR,
                                                       DEFAULT_CONGESTION_AVOIDANCE_GROWTH_RATE_FACTOR));
@@ -511,17 +502,8 @@ setResendDelay(getInt(opts, PROP_INITIAL_RESEND_DELAY, 100));
             setInactivityAction(getInt(opts, PROP_INACTIVITY_ACTION, DEFAULT_INACTIVITY_ACTION));
         }
 
-        // Calculate minimum required inbound buffer size to accommodate full window
-        // Use 1.5*maxWindowSize to handle dynamic window growth while keeping memory usage sane
-        int minRequiredBufferSize = getMaxMessageSize() * ((3 * getMaxWindowSize()) / 2 + 2);
-        setInboundBufferSize(minRequiredBufferSize);
-
-        // Validate buffer size is sufficient for window size
-        if (_inboundBufferSize < minRequiredBufferSize) {
-            _log.warn("Inbound buffer size (" + _inboundBufferSize + ") is too small for window size (" +
-                     getMaxWindowSize() + "). Adjusting to " + minRequiredBufferSize + " bytes");
-            setInboundBufferSize(minRequiredBufferSize);
-        }
+        // Calculate and set minimum required inbound buffer size
+        initializeInboundBufferSize();
 
         if (opts.getProperty(PROP_CONGESTION_AVOIDANCE_GROWTH_RATE_FACTOR) != null) {
             setCongestionAvoidanceGrowthRateFactor(getInt(opts, PROP_CONGESTION_AVOIDANCE_GROWTH_RATE_FACTOR,
@@ -1020,6 +1002,21 @@ setResendDelay(getInt(opts, PROP_INITIAL_RESEND_DELAY, 100));
                                          .append(_maxTotalConnsPerDay);
         }
         return buf.toString();
+    }
+
+    /**
+     * Calculate and set minimum required inbound buffer size to accommodate full window.
+     * Uses 1.5*maxWindowSize to handle dynamic window growth while keeping memory usage sane.
+     */
+    private void initializeInboundBufferSize() {
+        int minRequiredBufferSize = getMaxMessageSize() * ((3 * getMaxWindowSize()) / 2 + 2);
+        setInboundBufferSize(minRequiredBufferSize);
+
+        if (_inboundBufferSize < minRequiredBufferSize) {
+            _log.warn("Inbound buffer size (" + _inboundBufferSize + ") is too small for window size (" +
+                     getMaxWindowSize() + "). Adjusting to " + minRequiredBufferSize + " bytes");
+            setInboundBufferSize(minRequiredBufferSize);
+        }
     }
 
     private static boolean getBool(Properties opts, String name, boolean defaultVal) {
