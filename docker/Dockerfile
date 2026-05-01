@@ -25,8 +25,11 @@ COPY --from=builder /tmp/build/pkg-temp .
 COPY docker/rootfs/ /
 RUN chmod +x /startapp.sh
 
-# Configure I2P+ to use chosen port - ensure this port is port-forwarded and unfirewalled as required,
+# Configure I2P+ to use random port (0=random) - override with --build-arg or -e at runtime
+# ensure this port is port-forwarded and unfirewalled as required,
 # otherwise your router will run in firewalled mode
+ARG EXTERNAL_PORT=0
+ENV EXTERNAL_PORT=${EXTERNAL_PORT}
 RUN echo "i2np.udp.internalPort=17616=$EXTERNAL_PORT" >> ${APP_HOME}/router.config
 RUN echo "i2np.udp.port=$EXTERNAL_PORT" >> ${APP_HOME}/router.config
 

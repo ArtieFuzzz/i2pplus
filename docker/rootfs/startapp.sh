@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 set -e
+set -u
 
 # Default JVM heap size
-if [ -z $JVM_XMX ]; then
+if [ -z "$JVM_XMX" ]; then
     echo "[startapp] Using the default 512MB JVM heap limit for I2P+..."
     echo "[startapp] To configure a different maximum value, change the JVM_XMX"
     echo "[startapp] variable value in startapp.sh (for example JVM_XMX=1024m)"
@@ -50,17 +51,31 @@ if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
     echo "[startapp] Note that your browser may warn you about the site certificate which is self-signed."
     echo ""
 
-    # Update configuration files with the new IP
+    # Update configuration files with the new IP (only for non-listener configs)
+    # Keep listeners on 127.0.0.1 for security, only change hostname references
     for config_file in $(find . -name '*.config'); do
         if [ -f "$config_file" ]; then
-            sed -i "s/127.0.0.1/$IP_ADDR/g" "$config_file"
+            # Only replace localhost, not 127.0.0.1 (keep loopback binding)
             sed -i "s/localhost/$IP_ADDR/g" "$config_file"
         fi
     done
+
+    # Override external port if EXTERNAL_PORT env var is set (runtime override)
+    if [ -n "${EXTERNAL_PORT:-}" ] && [ "${EXTERNAL_PORT:-}" != "0" ]; then
+        echo "[startapp] Setting external port to $EXTERNAL_PORT (from EXTERNAL_PORT env)"
+        sed -i "s/i2np.udp.port=.*/i2np.udp.port=${EXTERNAL_PORT}/" router.config
+        sed -i "s/i2np.ntcp.port=.*/i2np.ntcp.port=${EXTERNAL_PORT}/" router.config
+        sed -i "s/i2np.udp.internalPort=.*/i2np.udp.internalPort=${EXTERNAL_PORT}/" router.config
+    fi
 fi
 
 # Set required Java options
-JAVA_OPTS="-Djava.net.preferIPv4Stack=false -Djava.library.path=${I2P}:${I2P}/lib -Di2p.dir.base=${I2P} -Di2p.dir.config=${HOME}/.i2p -DloggerFilenameOverride=logs/log-router-@.txt -Xmx$JVM_XMX"
+JAVA_OPTS="-Djava.net.preferIPv4Stack=false -Djava.library.path=${I2P}:${I2P}/lib -Di2p.dir.base=${I2P} -Di2p.dir.config=${HOME}/.i2p -DloggerFilenameOverride=logs/log-router-@.txt -Xmx${JVM_XMX}"
+
+# Append JAVA17OPTS if defined
+if [ -n "${JAVA17OPTS:-}" ]; then
+    JAVA_OPTS="${JAVA_OPTS} ${JAVA17OPTS}"
+fi
 
 # Launch I2P+
 echo "[startapp] Launching I2P+ ... please stand by ..."
@@ -69,4 +84,4 @@ echo "[startapp] When I2P+ has started, review the existing UDP port on http://1
 echo "[startapp] is permitted for both TCP and UDP in your firewall, and port-forwarded from your network router or modem"
 echo "[startapp] in order to run the router at full capacity. Also be sure to configure your bandwidth settings."
 echo ""
-java -cp "${CLASSPATH}" ${JAVA_OPTS} net.i2p.router.RouterLaunch
+exec java -cp "${CLASSPATH}" ${JAVA_OPTS} net.i2p.router.RouterLaunch
