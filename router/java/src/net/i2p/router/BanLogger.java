@@ -13,12 +13,15 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TimeZone;
-
+import java.util.Map;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 import net.i2p.data.Hash;
 import net.i2p.data.router.RouterAddress;
 import net.i2p.data.router.RouterInfo;
 import net.i2p.router.HashPatternDetector;
 import net.i2p.util.Log;
+import net.i2p.util.LHMCache;
 
 /**
  * Dedicated logger for all ban events.
@@ -48,8 +51,9 @@ public class BanLogger {
     private static volatile boolean _initialized = false;
     private static volatile boolean _globalArchiveDone = false;
     private static volatile boolean _headerWritten = false;
-    private static final Set<String> _loggedHashes = Collections.synchronizedSet(new HashSet<String>());
-    private static final Set<String> _loggedIPs = Collections.synchronizedSet(new HashSet<String>());
+    private static final int MAX_LOGGED_ENTRIES = 5000;
+    private static final Map<String, Long> _loggedHashes = Collections.synchronizedMap(new LHMCache<>(MAX_LOGGED_ENTRIES));
+    private static final Map<String, Long> _loggedIPs = Collections.synchronizedMap(new LHMCache<>(MAX_LOGGED_ENTRIES));
 
     public BanLogger() {
         _dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -118,7 +122,7 @@ public class BanLogger {
                     if ("UNKNOWN".equals(hash) && !ip.isEmpty()) {
                         long expires = parseDuration(durationStr, now);
                         if (expires > now) {
-                            _loggedIPs.add(ip);
+                            _loggedIPs.put(ip, Long.valueOf(expires));
                         }
                     }
                 }
@@ -481,12 +485,12 @@ public class BanLogger {
                 return;
             }
         } else {
-            if (!_loggedHashes.add(hashStr)) {
+            if (_loggedHashes.put(hashStr, Long.valueOf(System.currentTimeMillis())) != null) {
                 return;
             }
             // Also track IP to prevent duplicate logging for same IP
             if (ip != null && !ip.isEmpty() && !"UNKNOWN".equals(ip)) {
-                _loggedIPs.add(ip);
+                _loggedIPs.put(ip, Long.valueOf(System.currentTimeMillis()));
             }
         }
 

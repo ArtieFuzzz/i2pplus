@@ -113,7 +113,7 @@ public class Banlist {
     /**
      * Ban duration for repeat bad packet offenders.
      */
-    public final static long BANLIST_DURATION_BAD_PACKETS = 8*60*60*1000; // 8 hours
+    public final static long BANLIST_DURATION_BAD_PACKETS = 60*60*1000; // 1 hour
     private final static long BANLIST_CLEANER_START_DELAY = BANLIST_DURATION_PARTIAL;
 
     /**
@@ -222,7 +222,7 @@ public class Banlist {
             // Ban the IP
             String reason = "Sending bad packets";
             if (version != null) {
-                reason += " [" + version + "]";
+                reason += " (" + version + ")";
             }
 
             if (_log.shouldWarn()) {
@@ -268,7 +268,7 @@ public class Banlist {
         if (data[1] >= MAX_OFFENSES) {
             String reason = "Corrupt connection (no data)";
             if (version != null) {
-                reason += " [" + version + "]";
+                reason += " (" + version + ")";
             }
 
             if (_log.shouldWarn()) {
@@ -352,7 +352,7 @@ public class Banlist {
         }
 
         if (data[1] >= MAX_UNSOLICITED_DBSEARCH) {
-            String reason = "Fake Search Replies";
+            String reason = "Fake/Slow Search Replies";
             if (version != null) {
                 reason += " (" + version + ")";
             }
