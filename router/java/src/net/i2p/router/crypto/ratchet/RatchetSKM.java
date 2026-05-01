@@ -606,8 +606,8 @@ public class RatchetSKM extends SessionKeyManager implements SessionTagListener 
                     _log.debug("Inbound ES Tag " + key.getNonce() + " consumed: " + tag.toBase64() + "\n* " + tagSet);
             }
         } else {
-            if (_log.shouldWarn())
-                _log.warn("Tag " + tag + " not found in tagset!!! \n* " + tagSet);
+            if (_log.shouldInfo())
+                _log.info(tag + " not found in Tagset \n* " + tagSet);
         }
         return key;
     }
