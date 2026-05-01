@@ -156,7 +156,8 @@ public class RatchetSKM extends SessionKeyManager implements SessionTagListener 
     }
 
 /**
- * Session key manager for ratchet encryption that handles outbound sessions, inbound tag sets, next key exchanges, and acknowledgment processing for ECIES+AEAD communications
+ * Session key manager for ratchet encryption that handles outbound sessions, inbound tag sets,
+ * next key exchanges, and acknowledgment processing for ECIES+AEAD communications
  *
  *  @since 0.9.44
  */
@@ -600,13 +601,13 @@ public class RatchetSKM extends SessionKeyManager implements SessionTagListener 
             }
             if (_log.shouldDebug()) {
                 if (state != null)
-                    _log.debug("Inbound NSR Tag " + key.getNonce() + " consumed: " + tag.toBase64() + " from\n" + tagSet);
+                    _log.debug("Inbound NSR Tag " + key.getNonce() + " consumed: " + tag.toBase64() + "\n* " + tagSet);
                 else
-                    _log.debug("Inbound ES Tag " + key.getNonce() + " consumed: " + tag.toBase64() + " from\n" + tagSet);
+                    _log.debug("Inbound ES Tag " + key.getNonce() + " consumed: " + tag.toBase64() + "\n* " + tagSet);
             }
         } else {
             if (_log.shouldWarn())
-                _log.warn("Tag " + tag + " not found in tagset!!! " + tagSet);
+                _log.warn("Tag " + tag + " not found in tagset!!! \n* " + tagSet);
         }
         return key;
     }

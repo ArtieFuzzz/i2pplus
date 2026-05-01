@@ -386,7 +386,7 @@ class RatchetTagSet implements TagSetHandle {
                 Log log = I2PAppContext.getGlobalContext().logManager().getLog(RatchetTagSet.class);
                 if (log.shouldWarn())
                     log.warn("NSR state already consumed, rejecting tag " + tag.toBase64() +
-                             " in tagset " + _tagSetID + " - possible duplicate or stale tag");
+                             " in TagSet #" + _tagSetID + " -> Possible duplicate or stale tag");
                 return null;
             }
             _nsrStateConsumed = true;
