@@ -51,7 +51,7 @@ class Connection {
     private final AtomicLong _closeReceivedOn = new AtomicLong();
     private final AtomicInteger _unackedPacketsReceived = new AtomicInteger();
     private long _congestionWindowEnd;
-    private volatile long _highestAckedThrough;
+    private final AtomicLong _highestAckedThrough = new AtomicLong(-1);
     private volatile int _ssthresh;
     private final boolean _isInbound;
     private boolean _updatedShareOpts;
@@ -167,7 +167,6 @@ class Connection {
         _nextSendTime = -1;
         _createdOn = _context.clock().now();
         _congestionWindowEnd = _options.getWindowSize()-1;
-        _highestAckedThrough = -1;
         _ssthresh = ConnectionPacketHandler.MAX_SLOW_START_WINDOW;
         _lastCongestionTime = -1;
         _lastCongestionHighestUnacked = -1;
@@ -308,7 +307,7 @@ class Connection {
     private boolean shouldWait(int unacked, int wsz) {
         return _isChoked || unacked >= wsz ||
                _activeResends.get() >= (wsz + 1) / 2 ||
-               _lastSendId.get() - _highestAckedThrough >= Math.min(MAX_WINDOW_SIZE, 2 * wsz);
+               _lastSendId.get() - _highestAckedThrough.get() >= Math.min(MAX_WINDOW_SIZE, 2 * wsz);
     }
 
     private boolean handleTimeout(long timeLeft, long timeoutMs) {
@@ -485,18 +484,24 @@ class Connection {
      *  @return List of packets acked for the first time, or null if none
      */
     public List<PacketLocal> ackPackets(long ackThrough, long nacks[]) {
-        // FIXME synch this part too?
-        if (ackThrough < _highestAckedThrough) {
+        long current = _highestAckedThrough.get();
+        if (ackThrough < current) {
             // dupack which won't tell us anything
         } else {
-           if (nacks == null) {
-                _highestAckedThrough = ackThrough;
+            if (nacks == null) {
+                _highestAckedThrough.set(ackThrough);
             } else {
                 long lowest = -1;
                 for (int i = 0; i < nacks.length; i++) {
                     if ((lowest < 0) || (nacks[i] < lowest)) {lowest = nacks[i];}
                 }
-                if (lowest - 1 > _highestAckedThrough) {_highestAckedThrough = lowest - 1;}
+                long newVal = lowest - 1;
+                long prev;
+                do {
+                    prev = current;
+                    if (newVal <= prev) break;
+                    current = _highestAckedThrough.get();
+                } while (prev != current && !_highestAckedThrough.compareAndSet(prev, newVal));
             }
         }
 
@@ -631,9 +636,15 @@ class Connection {
     public void closeReceived() {
         if (_closeReceivedOn.compareAndSet(0, _context.clock().now())) {
             _inputStream.closeReceived();
-            // TODO if outbound && no SYN received, treat like a reset? Could this happen?
-            if (_closeSentOn.get() > 0) {disconnect(true);} // received after sent
-            else {
+            if (_closeSentOn.get() > 0) {
+                // We sent close first, peer acked it
+                disconnect(true);
+            } else if (!_isInbound && !_connected.get()) {
+                // Outbound connection that never completed - treat as reset/failure
+                _connected.set(false);
+                disconnect(false);
+            } else {
+                // Normal close from peer
                 synchronized (_connectLock) {_connectLock.notifyAll();}
             }
         }
@@ -1133,7 +1144,7 @@ class Connection {
     public void setCongestionWindowEnd(long endMsg) {_congestionWindowEnd = endMsg;}
 
     /** @return the highest outbound packet we have received an ack for */
-    public long getHighestAckedThrough() {return _highestAckedThrough;}
+    public long getHighestAckedThrough() {return _highestAckedThrough.get();}
 
     public long getLastActivityOn() {
         return (_lastSendTime > _lastReceivedOn ? _lastSendTime : _lastReceivedOn);
@@ -1341,7 +1352,7 @@ class Connection {
         if  (_log.shouldInfo()) {
             buf.append("\n* Up: ").append(DataHelper.formatDuration(now - _createdOn));
             buf.append("; Window size: ").append(_options.getWindowSize());
-            buf.append("; Congestion window: ").append(_congestionWindowEnd - _highestAckedThrough);
+            buf.append("; Congestion window: ").append(_congestionWindowEnd - _highestAckedThrough.get());
             buf.append("; RTT: ").append(_options.getRTT());
             buf.append("; RTO: ").append(_options.getRTO());
             // not synchronized to avoid some kooky races
@@ -1355,7 +1366,7 @@ class Connection {
             }
             buf.append("\n* Sent: ").append(1 + _lastSendId.get());
             buf.append("; Received: ").append(1 + _inputStream.getHighestBlockId() - missing);
-            buf.append("; ACKThru: ").append(_highestAckedThrough);
+            buf.append("; ACKThru: ").append(_highestAckedThrough.get());
             buf.append("; SSThresh: ").append(_ssthresh);
             buf.append("; MinRTT: ").append(_options.getMinRTT());
             buf.append("; MaxWin: ").append(_options.getMaxWindowSize());
