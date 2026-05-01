@@ -5,6 +5,8 @@
 
 package org.cybergarage.util;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Utility class providing timer and thread sleeping functionality. This class contains static
  * methods for pausing execution and generating random wait times, useful for timing control and
@@ -30,7 +32,7 @@ public final class TimerUtil {
      * @param time the maximum time to wait in milliseconds
      */
     public static final void waitRandom(int time) {
-        int waitTime = (int) (Math.random() * (double) time);
+        int waitTime = ThreadLocalRandom.current().nextInt(time);
         try {
             Thread.sleep(waitTime);
         } catch (Exception e) {

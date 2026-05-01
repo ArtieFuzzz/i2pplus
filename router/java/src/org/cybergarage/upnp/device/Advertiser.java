@@ -7,6 +7,7 @@ package org.cybergarage.upnp.device;
 
 import org.cybergarage.upnp.*;
 import org.cybergarage.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Thread for advertising UPnP device presence on the network.
@@ -79,7 +80,7 @@ public class Advertiser extends ThreadCore {
         long leaseTime = dev.getLeaseTime();
         long notifyInterval;
         while (isRunnable() == true) {
-            notifyInterval = (leaseTime / 4) + (long) ((float) leaseTime * (Math.random() * 0.25f));
+            notifyInterval = (leaseTime / 4) + ThreadLocalRandom.current().nextInt((int) (leaseTime / 4));
             notifyInterval *= 1000;
             try {
                 Thread.sleep(notifyInterval);

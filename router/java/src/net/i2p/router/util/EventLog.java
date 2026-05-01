@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -45,6 +46,9 @@ public class EventLog {
     /** event to starting time of cached map */
     private final Map<String, Long> _cacheTime;
 
+    /** max entries per cache type */
+    private static final int MAX_CACHE_ENTRIES = 32;
+
     /** for convenience, not required */
     public static final String ABORTED = "aborted";
     public static final String BECAME_FLOODFILL = "becameFloodfill";
@@ -68,6 +72,27 @@ public class EventLog {
     public static final String STOPPED = "stopped";
     public static final String UPDATED = "updated";
     public static final String WATCHDOG = "watchdog";
+
+    /**
+     *  Evict oldest entries if cache exceeds limit.
+     */
+    private synchronized void evictIfNeeded() {
+        if (_cache.size() <= MAX_CACHE_ENTRIES)
+            return;
+        long oldestTime = Long.MAX_VALUE;
+        String oldestKey = null;
+        for (Map.Entry<String, Long> e : _cacheTime.entrySet()) {
+            long t = e.getValue();
+            if (t < oldestTime) {
+                oldestTime = t;
+                oldestKey = e.getKey();
+            }
+        }
+        if (oldestKey != null) {
+            _cache.remove(oldestKey);
+            _cacheTime.remove(oldestKey);
+        }
+    }
 
     /**
      *  @param file should be absolute
@@ -159,6 +184,7 @@ public class EventLog {
             rv = Collections.unmodifiableSortedMap(rv);
             _cache.put(event, rv);
             _cacheTime.put(event, Long.valueOf(since));
+            evictIfNeeded();
         } catch (IOException ioe) {
         } finally {
             if (br != null) try { br.close(); } catch (IOException ioe) {}
