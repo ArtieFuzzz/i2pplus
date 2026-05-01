@@ -45,7 +45,7 @@ class IterativeLookupJob extends JobImpl {
         Hash from = _dsrm.getFromHash();
         long now = ctx.clock().now();
         Log log = _log;
-        if (!_search.wasQueried(from)) {
+        if (!_search.wasQueried(from) && !IterativeSearchJob.wasRecentlyQueried(from)) {
             String version = null;
             RouterInfo fromRI = ctx.netDb().lookupRouterInfoLocally(from);
             if (fromRI != null) {
@@ -60,6 +60,11 @@ class IterativeLookupJob extends JobImpl {
             ctx.banlist().unsolicitedDBSearchReply(from, version);
             return;
         }
+
+        // Valid late reply - was recently queried (within grace period)
+
+        // Valid response - remove from grace period cache if present
+        IterativeSearchJob.clearRecentlyQueried(from);
 
         // Chase the hashes from the reply - 255 max, see comments in SingleLookupJob
         int limit = Math.min(_dsrm.getNumReplies(), SingleLookupJob.MAX_TO_FOLLOW);

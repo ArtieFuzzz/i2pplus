@@ -118,6 +118,9 @@ public class FloodfillNetworkDatabaseFacade extends KademliaNetworkDatabaseFacad
         _context.statManager().createRateStat("netDb.republishQuantity", "Number of peers we need to send a found LeaseSet to", "NetworkDatabase", rate);
         // for ISJ
         _context.statManager().createRateStat("netDb.RILookupDirect", "Number of direct Iterative RouterInfo lookups", "NetworkDatabase", rate);
+        // late reply grace period cache
+        _context.statManager().createRateStat("netDb.lateReplyCacheSize", "Size of late reply grace period cache", "NetworkDatabase", rate);
+        _context.statManager().createRateStat("netDb.lateReplyTimedOut", "Timed out peers added to late reply cache", "NetworkDatabase", rate);
         // No need to start the FloodfillMonitorJob for client subDb.
         if (isClientDb()) {_ffMonitor = null;}
         else {_ffMonitor = new FloodfillMonitorJob(_context, this);}

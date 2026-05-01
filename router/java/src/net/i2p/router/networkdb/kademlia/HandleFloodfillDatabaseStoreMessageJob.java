@@ -30,6 +30,7 @@ import net.i2p.router.RouterContext;
 import net.i2p.router.BanLogger;
 import net.i2p.router.TunnelInfo;
 import net.i2p.router.message.SendMessageDirectJob;
+import net.i2p.util.I2PThread;
 import net.i2p.util.Log;
 import net.i2p.util.SystemVersion;
 import net.i2p.util.VersionComparator;
@@ -528,7 +529,7 @@ class HandleFloodfillDatabaseStoreMessageJob extends JobImpl {
                         getContext().statManager().addRateData("netDb.storeFloodNew", floodEnd-floodBegin, 60*1000);
                     }
                 };
-                new Thread(floodTask, "Flood Worker").start();
+                new I2PThread(floodTask, "Flood Worker", true).start();
             } else {
                 // don't flood it *again*
                 getContext().statManager().addRateData("netDb.storeFloodOld", 1);

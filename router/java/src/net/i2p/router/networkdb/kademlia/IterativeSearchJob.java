@@ -92,6 +92,30 @@ public class IterativeSearchJob extends FloodSearchJob {
     private static final int EXTRA_PEERS = 2;
     private static final int IP_CLOSE_BYTES = 3;
     private static final int MAX_SEARCH_TIME = 15*1000;
+
+    /** Cache size for recently completed peer replies to avoid false positive bans */
+    private static final int COMPLETED_CACHE_SIZE = 8192;
+    private static final String PROP_LATE_REPLY_GRACE = "netDb.lateReplyGracePeriod";
+    /** Default grace period for late replies (5 min) */
+    private static final long LATE_REPLY_GRACE_PERIOD_DEFAULT = 5*60*1000;
+    /** Grace period for late replies - dynamically loadable */
+    private static volatile long _lateReplyGracePeriod = LATE_REPLY_GRACE_PERIOD_DEFAULT;
+
+/**
+     * Reload grace period from properties (for dynamic tuning).
+     * Console may call this.
+     * @return current grace period in ms
+     */
+    public static long reloadGracePeriod(RouterContext ctx) {
+        long period = ctx.getProperty(PROP_LATE_REPLY_GRACE, LATE_REPLY_GRACE_PERIOD_DEFAULT);
+        _lateReplyGracePeriod = period;
+        return period;
+    }
+    private static long getGracePeriod() {
+        return _lateReplyGracePeriod;
+    }
+    /** Static cache of recently completed searches: peer hash -> expiration timestamp */
+    private static final ConcurrentHashMap<Hash, Long> _recentlyCompleted = new ConcurrentHashMap<>(COMPLETED_CACHE_SIZE);
     /**
      *  The time before we give up and start a new search - much shorter than the message's expire time
      *  Longer than the typ. response time of 1.0 - 1.5 sec, but short enough that we move
@@ -705,6 +729,24 @@ public class IterativeSearchJob extends FloodSearchJob {
     }
 
     /**
+     * Was this peer recently queried (within grace period)?
+     * Used to avoid false positive bans for late but legitimate replies.
+     * @since 0.9.67
+     */
+    public static boolean wasRecentlyQueried(Hash peer) {
+        Long expiration = _recentlyCompleted.get(peer);
+        return expiration != null && expiration > System.currentTimeMillis();
+    }
+
+    /**
+     * Clear peer from grace period cache (received their response).
+     * @since 0.9.67
+     */
+    public static void clearRecentlyQueried(Hash peer) {
+        _recentlyCompleted.remove(peer);
+    }
+
+    /**
      *  When did we send the query to the peer?
      *  @return context time, or -1 if never sent
      */
@@ -789,6 +831,25 @@ public class IterativeSearchJob extends FloodSearchJob {
         }
 
         _facade.complete(_key);
+        // Add timed-out peers to grace period cache to avoid false positive bans for late replies
+        // Only track peers that didn't respond (timed out) - successful responses handled differently
+        long graceUntil = getContext().clock().now() + getGracePeriod();
+        getContext().statManager().addRateData("netDb.lateReplyCacheSize", _recentlyCompleted.size());
+        int added = 0;
+        for (Hash h : _failedPeers) {
+            if (_recentlyCompleted.size() > COMPLETED_CACHE_SIZE * 2) {
+                // Clean old entries if cache too large
+                long now = getContext().clock().now();
+                _recentlyCompleted.entrySet().removeIf(e -> e.getValue() < now);
+            }
+            Long prev = _recentlyCompleted.put(h, graceUntil);
+            if (prev == null) {
+                added++;  // Only count new entries
+            }
+        }
+        if (added > 0) {
+            getContext().statManager().addRateData("netDb.lateReplyTimedOut", added);
+        }
         if (peer != null) {
             Long timeSent = _sentTime.get(peer);
             if (timeSent != null) {
