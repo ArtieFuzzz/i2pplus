@@ -1583,9 +1583,9 @@ public class I2PTunnelHTTPClient extends I2PTunnelHTTPClientBase implements Runn
         // Firefox (and others?) don't send referer to meta refresh target, which is
         // what the jump servers use, so this isn't that useful.
         if (referer != null) {
-            out.write("<input type=hidden name=\"referer\" value=\"" + referer + "\">\n");
+            out.write("<input type=hidden name=\"referer\" value=\"" + DataHelper.escapeHTML(referer) + "\">\n");
         }
-        out.write("<input type=hidden name=\"url\" value=\"" + targetRequest + "\">\n</form>\n</div>\n");
+        out.write("<input type=hidden name=\"url\" value=\"" + DataHelper.escapeHTML(targetRequest) + "\">\n</form>\n</div>\n");
         writeFooter(out);
     }
 
@@ -1597,7 +1597,7 @@ public class I2PTunnelHTTPClient extends I2PTunnelHTTPClientBase implements Runn
         Writer out = new BufferedWriter(new OutputStreamWriter(outs, "UTF-8"));
         String header = getErrorPage("b32-auth", ERR_DESTINATION_UNKNOWN);
         out.write(header);
-        out.write("<p>" + _t("Base32") + ": <a href=\"" + destination + "\">" + destination + "</a></p>\n" + "<hr>\n");
+        out.write("<p>" + _t("Base32") + ": <a href=\"" + DataHelper.escapeHTML(destination) + "\">" + DataHelper.escapeHTML(destination) + "</a></p>\n" + "<hr>\n");
         String msg;
         if (code == LookupResult.RESULT_SECRET_REQUIRED)
             msg = _t("Base32 address requires lookup password");
@@ -1609,10 +1609,10 @@ public class I2PTunnelHTTPClient extends I2PTunnelHTTPClientBase implements Runn
             msg = _t("Base32 address decryption failure, check encryption key");
         else
             msg = "lookup failure code " + code;
-        out.write("<p><b>" + msg + "</b></p>");
+        out.write("<p><b>" + DataHelper.escapeHTML(msg) + "</b></p>");
         out.write("<form method=GET action=\"http://" + LOCAL_SERVER + "/b32\">\n" +
-                  "<input type=hidden name=\"host\" value=\"" + destination + "\">\n" +
-                  "<input type=hidden name=\"url\" value=\"" + targetRequest + "\">\n" +
+                  "<input type=hidden name=\"host\" value=\"" + DataHelper.escapeHTML(destination) + "\">\n" +
+                  "<input type=hidden name=\"url\" value=\"" + DataHelper.escapeHTML(targetRequest) + "\">\n" +
                   "<input type=hidden name=\"code\" value=\"" + code + "\">\n" +
                   "<input type=hidden name=\"nonce\" value=\"" + _proxyNonce + "\">\n");
 

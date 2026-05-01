@@ -113,7 +113,7 @@
 
 
 <td class=tunnelName>
-<%          String tunnelName = indexBean.getTunnelName(curServer);
+<%          String tunnelName = net.i2p.data.DataHelper.escapeHTML(indexBean.getTunnelName(curServer));
             String serverDesc = indexBean.getTunnelDescription(curServer);
             if (serverDesc != null && serverDesc.length() > 0) {
 %>
@@ -231,7 +231,7 @@ SSL
 <%          String name = indexBean.getSpoofedHost(curServer);
             boolean hasHostname = false;
             if (name == null || name.equals("")) {
-                name = indexBean.getTunnelName(curServer);
+                name = net.i2p.data.DataHelper.escapeHTML(indexBean.getTunnelName(curServer));
                 out.write("<b>");
                 out.write(intl._t("Destination"));
                 out.write(":</b></span> <span class=selectAll>");
@@ -375,9 +375,9 @@ SSL
 
 <td class=tunnelName>
 <%          if (clientDesc != null && clientDesc.length() != 0) { %>
-<a href="edit?tunnel=<%=curClient%>" title="<%=clientDesc%>"><%=indexBean.getTunnelName(curClient)%></a>
+<a href="edit?tunnel=<%=curClient%>" title="<%=clientDesc%>"><%=net.i2p.data.DataHelper.escapeHTML(indexBean.getTunnelName(curClient))%></a>
 <%          } else { %>
-<a href="edit?tunnel=<%=curClient%>" title="<%=intl._t("Edit Tunnel Settings for")%>&nbsp;<%=indexBean.getTunnelName(curClient)%>"><%=indexBean.getTunnelName(curClient)%></a>
+<a href="edit?tunnel=<%=curClient%>" title="<%=intl._t("Edit Tunnel Settings for")%>&nbsp;<%=net.i2p.data.DataHelper.escapeHTML(indexBean.getTunnelName(curClient))%>"><%=net.i2p.data.DataHelper.escapeHTML(indexBean.getTunnelName(curClient))%></a>
 <%          } %>
 </td>
 

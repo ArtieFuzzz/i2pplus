@@ -90,8 +90,8 @@
     int jettyPort = pm.getPort(net.i2p.util.PortMapper.SVC_EEPSITE);
     int jettySSLPort = pm.getPort(net.i2p.util.PortMapper.SVC_HTTPS_EEPSITE);
 
-    if (name == null || name.equals(""))
-        name = editBean.getTunnelName(curTunnel);
+if (name == null || name.equals(""))
+        name = net.i2p.data.DataHelper.escapeHTML(editBean.getTunnelName(curTunnel));
     if (!"new".equals(tunnelType)) {
         // build tables for vhost and targets
         java.util.TreeSet<Integer> ports = new java.util.TreeSet<Integer>();
@@ -489,7 +489,7 @@
         } // action != null
 %>
 <div class=panel id=ssl>
-<h2><%=intl._t("SSL Wizard")%> (<%=editBean.getTunnelName(curTunnel)%>)</h2>
+<h2><%=intl._t("SSL Wizard")%> (<%=net.i2p.data.DataHelper.escapeHTML(editBean.getTunnelName(curTunnel))%>)</h2>
 <form method=POST action="ssl" accept-charset=utf-8>
 <input type=hidden name="tunnel" value="<%=curTunnel%>"/>
 <input type=hidden name=nonce value="<%=net.i2p.i2ptunnel.web.IndexBean.getNextNonce()%>"/>

@@ -14,11 +14,12 @@
     String phdisabled = (canChangePort && isShared) ? "" : (isShared ? tbstopFirst : tastopFirst);
     String tunnelTypeName;
     String tunnelType;
+    String tunnelName = net.i2p.data.DataHelper.escapeHTML(editBean.getTunnelName(curTunnel));
     if (curTunnel >= 0) {
         tunnelTypeName = editBean.getTunnelType(curTunnel);
         tunnelType = editBean.getInternalType(curTunnel);
 %>
-<h2><%=editBean.getTunnelName(curTunnel)%>&nbsp;<%=intl._t("Configuration")%>&nbsp;<span style="float:right;font-size:80%">Type: <%=tunnelTypeName%></span></h2>
+<h2><%=tunnelName%>&nbsp;<%=intl._t("Configuration")%>&nbsp;<span style="float:right;font-size:80%">Type: <%=tunnelTypeName%></span></h2>
 <%  } else {
         tunnelTypeName = editBean.getTypeName(request.getParameter("type"));
         tunnelType = net.i2p.data.DataHelper.stripHTML(request.getParameter("type"));
@@ -56,7 +57,7 @@
 <table id=clientTunnelEdit class=tunnelConfig>
 <tr><th><%=intl._t("Name")%></th><th><%=intl._t("Auto Start Tunnel")%></th></tr>
 <tr>
-<td><input type=text size=30 maxlength=50 name="nofilter_name" title="<%=intl._t("Name of tunnel to be displayed on Tunnel Manager home page and the router console sidebar")%>" value="<%=editBean.getTunnelName(curTunnel)%>" class="freetext tunnelName"></td>
+<td><input type=text size=30 maxlength=50 name="nofilter_name" title="<%=intl._t("Name of tunnel to be displayed on Tunnel Manager home page and the router console sidebar")%>" value="<%=tunnelName%>" class="freetext tunnelName"></td>
 <td><label title="<%=intl._t("Enable this option to ensure this service is available when the router starts")%>"><input value="1" type=checkbox name="startOnLoad"<%=(editBean.startAutomatically(curTunnel) ? checked : "")%> class="optbox slider"> <%=intl._t("Automatically start tunnel when router starts")%></label></td>
 </tr>
 <tr><th><%=intl._t("Description")%></th>

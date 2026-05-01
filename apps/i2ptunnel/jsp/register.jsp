@@ -49,11 +49,11 @@
     String tunnelTypeName;
     String tunnelType;
     boolean valid = false;
-    if (curTunnel >= 0) {
+if (curTunnel >= 0) {
         tunnelTypeName = editBean.getTunnelType(curTunnel);
         tunnelType = editBean.getInternalType(curTunnel);
 %>
-<h2><%=intl._t("Registration Helper")%> (<%=editBean.getTunnelName(curTunnel)%>)</h2>
+<h2><%=intl._t("Registration Helper")%> (<%=net.i2p.data.DataHelper.escapeHTML(editBean.getTunnelName(curTunnel))%>)</h2>
 <%
     } else {
         tunnelTypeName = "new";
@@ -65,7 +65,7 @@
     String b64 = editBean.getDestinationBase64(curTunnel);
     String name = editBean.getSpoofedHost(curTunnel);
     if (name == null || name.equals(""))
-        name = editBean.getTunnelName(curTunnel);
+        name = net.i2p.data.DataHelper.escapeHTML(editBean.getTunnelName(curTunnel));
 %>
 <input type=hidden name="tunnel" value="<%=curTunnel%>">
 <input type=hidden name=nonce value="<%=net.i2p.i2ptunnel.web.IndexBean.getNextNonce()%>">
@@ -83,7 +83,7 @@
 %>
 <table>
 <tr><td class=infohelp><%=intl._t("Please be sure to select, copy, and paste the entire contents of the appropriate authentication data into the form of your favorite registration site")%></td></tr>
-<tr><td><b><%=intl._t("Tunnel name")%>:</b> <%=editBean.getTunnelName(curTunnel)%></td></tr>
+<tr><td><b><%=intl._t("Tunnel name")%>:</b> <%=net.i2p.data.DataHelper.escapeHTML(editBean.getTunnelName(curTunnel))%></td></tr>
 <%
       if (("httpserver".equals(tunnelType)) || ("httpbidirserver".equals(tunnelType))) {
 %>
