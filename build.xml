@@ -583,7 +583,7 @@
     <copy quiet="true" file="apps/pack200/java/build/pack200.jar" todir="build/"/>
   </target>
 
-  <target name="buildProperties" depends="getGitRev, getReleaseNumber, getBuildNumber, setBuildTimestamp, disableManifestClasspath">
+  <target name="buildProperties" depends="getGitRev, getReleaseNumber, getBuildNumber, setBuildTimestamp, disableManifestClasspath, checkLibraryVersions">
     <antversion property="antversion"/>
     <fail message="FATAL: Minimum Ant version is ${ant.minimumVersion} - your Ant version is ${antversion}">
       <condition>
@@ -604,6 +604,24 @@
     <echo message="Ant-Contrib: ${basedir}/tools/ant-contrib.jar"/>
     <echo message="JDK: ${java.vendor} ${java.version} (${java.runtime.name} ${java.runtime.version})"/>
     <echo message="Build: I2P+ version ${full.version} (revision ${workspace.version})"/>
+  </target>
+
+  <!-- Library version tracking -->
+  <target name="checkLibraryVersions">
+    <!-- json-simple -->
+    <loadfile property="json-simple.version" srcFile="core/java/src/org/json/simple/version.txt"/>
+    <property name="json-simple.latest" value="4.0.1"/>
+    <echo message="Library versions:"/>
+    <echo message="  json-simple: ${json-simple.version} (latest: ${json-simple.latest})"/>
+    <!-- MiniDNS -->
+    <loadfile property="minidns.version" srcFile="core/java/src/org/minidns/version.txt"/>
+    <property name="minidns.latest" value="1.1.1"/>
+    <echo message="  MiniDNS: ${minidns.version} (latest: ${minidns.latest})"/>
+    <!-- Warning -->
+    <echo message=""/>
+    <echo message="NOTE: To update libraries, see:"/>
+    <echo message="  json-simple: https://cliftonlabs.github.io/json-simple/"/>
+    <echo message="  MiniDNS: https://github.com/minidns/minidns"/>
   </target>
 
   <target name="setBuildTimestamp" unless="${build.reproducible}">
