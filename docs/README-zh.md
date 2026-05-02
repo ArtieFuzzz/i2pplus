@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@
 
 ## 安装
 
-有关安装说明，请参见[INSTALL.txt](INSTALL.txt)或https://i2pplus.github.io/。
+有关安装说明，请参见[INSTALL.md](INSTALL.md)或https://i2pplus.github.io/。
+
+### Windows installer note
+
+当使用 Java > 1.8 或其他发行版（如 AdoptOpenJDK 等）时，installer exe 可能会出现"Java not found"或"invalid/corrupt"错误。解决方法：从 exe 中解压 install.jar 并从命令行运行 `java -jar install.jar`。
 
 ## 文档
 
@@ -35,9 +41,8 @@ API：https://i2pplus.github.io/javadoc/
 
 ### 准备
 
--Java SDK（最好是Oracle / Sun或OpenJDK）1.7.0或更高版本
-  -某些嵌入式子系统（核心，路由器，mstreaming，流传输，i2ptunnel）
--Apache Ant 1.7.0或更高版本
+- Java SDK 1.8.0或更高版本
+- Apache Ant 1.9.8或更高版本
 -从GNU gettext包安装的xgettext，msgfmt和msgmerge工具
   http://www.gnu.org/software/gettext/
 -构建环境必须使用UTF-8语言环境。

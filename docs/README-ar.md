@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@
 
 ## التثبيت
 
-راجع [INSTALL.md](docs/INSTALL.md) أو https://i2pplus.github.io/ للحصول على تعليمات التثبيت.
+راجع [INSTALL.md](INSTALL.md) أو https://i2pplus.github.io/ للحصول على تعليمات التثبيت.
+
+### ملاحظة حول مثبت Windows
+
+عند استخدام Java > 1.8 أو التوزيعات البديلة (AdoptOpenJDK، وما إلى ذلك)، قد يفشل ملف exe الخاص بالمثبت出现خطأ "Java not found" أو "invalid/corrupt". الحل البديل: استخرج install.jar من exe وقم بتشغيل `java -jar install.jar` من سطر الأوامر.
 
 ## التوثيق
 

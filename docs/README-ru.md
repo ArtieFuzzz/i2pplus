@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@
 
 ## Установка
 
-Смотрите [INSTALL.txt](INSTALL.txt) или https://i2pplus.github.io/ для инструкций по установке.
+Смотрите [INSTALL.md](INSTALL.md) или https://i2pplus.github.io/ для инструкций по установке.
+
+### Примечание для Windows installer
+
+При использовании Java > 1.8 или альтернативных дистрибутивов (AdoptOpenJDK и т.д.), exe-файл инсталлятора может выдать ошибки "Java not found" или "invalid/corrupt". Решение: извлеките install.jar из exe и запустите `java -jar install.jar` из командной строки.
 
 ## Документация
 
@@ -25,7 +31,7 @@ https://geti2p.net/how
 API: https://i2pplus.github.io/javadoc/
 или запустите «ant javadoc», затем откройте файл index.html в папке build/javadoc.
 
-## Как внести вклад / Взломать I2P
+## Как внести вклад / Разработка для I2P+
 
 Пожалуйста, ознакомьтесь с [HACKING.md](HACKING.md) и другими документами в каталоге docs.
 

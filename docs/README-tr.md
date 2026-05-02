@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@ En son sürüm: https://i2pplus.github.io/
 
 ## Kurulum
 
-Kurulum talimatları için [INSTALL.md](docs/INSTALL.md) veya https://i2pplus.github.io/ adresine bakın.
+Kurulum talimatları için bkz. [INSTALL.md](INSTALL.md) veya https://i2pplus.github.io/.
+
+### Windows yükleyici notu
+
+Java > 1.8 veya alternatif dağıtımlar (AdoptOpenJDK vb.) ile yükleyici exe "Java not found" veya "invalid/corrupt" hatalarıyla başarısız olabilir. Geçici çözüm: exe'den install.jar'ı çıkarın ve komut satırından `java -jar install.jar` komutunu çalıştırın.
 
 ## Belgeler
 

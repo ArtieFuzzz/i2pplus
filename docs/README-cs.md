@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@ Nejnovější vydání: https://i2pplus.github.io/
 
 ## Instalace
 
-Pokyny k instalaci naleznete v [INSTALL.md](docs/INSTALL.md) nebo na https://i2pplus.github.io/
+Pokyny k instalaci najdete v [INSTALL.md](INSTALL.md) nebo na https://i2pplus.github.io/.
+
+### Poznámka k Windows installeru
+
+Při použití Java > 1.8 nebo alternativních distribucí (AdoptOpenJDK atd.) může exe installer selhat s chybami "Java not found" nebo "invalid/corrupt". Řešení: rozbalte install.jar z exe a spusťte `java -jar install.jar` z příkazového řádku.
 
 ## Dokumentace
 

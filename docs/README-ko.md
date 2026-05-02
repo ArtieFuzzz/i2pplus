@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@
 
 ## 설치
 
-설치 지침은 [INSTALL.md](docs/INSTALL.md) 또는 https://i2pplus.github.io/를 참조하세요.
+설치 지침은 [INSTALL.md](INSTALL.md) 또는 https://i2pplus.github.io/를 참조하세요.
+
+### Windows 인스톨러 참고
+
+Java > 1.8 또는 대체 배포판(AdoptOpenJDK 등)을 사용할 때 인스톨러 exe가 "Java not found" 또는 "invalid/corrupt" 오류로 실패할 수 있습니다. 해결 방법: exe에서 install.jar을 추출하고 명령줄에서 `java -jar install.jar`을 실행하세요.
 
 ## 문서
 

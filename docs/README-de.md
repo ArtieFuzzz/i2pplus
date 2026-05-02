@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -15,6 +17,10 @@ Neueste Version: https://i2pplus.github.io/
 ## Installation
 
 Siehe [INSTALL.md](docs/INSTALL.md) oder https://i2pplus.github.io/ für Installationsanweisungen.
+
+### Hinweis zum Windows-Installer
+
+Bei Java > 1.8 oder alternativen Distributionen (AdoptOpenJDK usw.) kann der Installer-Exe mit "Java not found" oder "invalid/corrupt" Fehlern fehlschlagen. Workaround: Extrahieren Sie install.jar aus der Exe und führen Sie `java -jar install.jar` über die Kommandozeile aus.
 
 ## Dokumentation
 

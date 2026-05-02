@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@ Rilis terbaru: https://i2pplus.github.io/
 
 ## Instalasi
 
-Lihat [INSTALL.md](docs/INSTALL.md) atau https://i2pplus.github.io/ untuk petunjuk instalasi.
+Lihat [INSTALL.md](INSTALL.md) atau https://i2pplus.github.io/ untuk instruksi instalasi.
+
+### Catatan installer Windows
+
+Dengan Java > 1.8 atau distribusi alternatif (AdoptOpenJDK, dll), exe installer mungkin gagal dengan kesalahan "Java not found" atau "invalid/corrupt". Solusi: ekstrak install.jar dari exe dan jalankan `java -jar install.jar` dari baris perintah.
 
 ## Dokumentasi
 

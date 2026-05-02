@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@
 
 ## نصب
 
-به [INSTALL.txt](INSTALL.txt) یا https://i2pplus.github.io/ برای دستورالعمل‌های نصب مراجعه کنید.
+به [INSTALL.md](INSTALL.md) یا https://i2pplus.github.io/ برای دستورالعمل‌های نصب مراجعه کنید.
+
+### نکته نصب‌کننده ویندوز
+
+با Java > 1.8 یا توزیع‌های جایگزین (مانند AdoptOpenJDK و غیره)، فایل exe نصب‌کننده ممکن است با خطاهای "Java not found" یا "invalid/corrupt" مواجه شود. راه‌حل: install.jar را از exe استخراج کرده و `java -jar install.jar` را از خط فرمان اجرا کنید.
 
 ## مستندات
 

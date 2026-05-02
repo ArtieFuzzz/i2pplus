@@ -1,8 +1,10 @@
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
-[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![I2P+ Installer](../tools/badges/installer-badge.svg)](https://i2pplus.github.io/installers/i2pinstall.exe)
 [![I2P+ Update zip](../tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
 [![I2P+ I2PSnark standalone](../tools/badges/i2psnark-badge.svg)](https://i2pplus.github.io/installers/i2psnark-standalone.zip)
 [![I2P+ Javadocs](../tools/badges/javadocs-badge.svg)](https://i2pplus.github.io/javadoc.zip)
+[![Docker](../tools/badges/docker-badge.svg)](docker/README.md)
+[![AppImage](../tools/badges/appimage-badge.svg)](tools/appimage/README.md)
 
 # I2P+
 
@@ -14,7 +16,11 @@ Dit is de broncode voor de soft-fork van de Java-implementatie van I2P.
 
 ## Installatie
 
-Zie [INSTALL.md](docs/INSTALL.md) of https://i2pplus.github.io/ voor installatie-instructies.
+Zie [INSTALL.md](INSTALL.md) of https://i2pplus.github.io/ voor installatie-instructies.
+
+### Opmerking over Windows-installatieprogramma
+
+Met Java > 1.8 of alternatieve distributies (AdoptOpenJDK, etc.) kan de installer-exe falen met "Java not found" of "invalid/corrupt" fouten. Workaround: pak install.jar uit de exe en voer `java -jar install.jar` uit vanaf de opdrachtregel.
 
 ## Documentatie
 
