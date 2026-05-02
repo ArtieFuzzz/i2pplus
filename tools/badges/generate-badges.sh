@@ -11,6 +11,7 @@ GREEN="2ecc71"
 ORANGE="e67e22"
 PURPLE="8e44ad"
 APPIMAGE="739FB9"
+ACCENT="b44422"
 
 # Common parameters
 STYLE="flat"
@@ -29,17 +30,17 @@ echo "Generating badges for I2P+ v${VERSION}..."
 # 1. Docker badge (docker logo)
 curl -sL "https://img.shields.io/badge/Docker-Guide-${BLUE}?logo=docker&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/docker-badge.svg"
 
-# 2. I2PSnark Download (github logo, grey|green)
-curl -sL "https://img.shields.io/badge/I2PSnark-Download-grey%7C${GREEN}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/i2psnark-badge.svg"
+# 2. I2PSnark Download (github logo, accent color)
+curl -sL "https://img.shields.io/badge/I2PSnark-Download-${ACCENT}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/i2psnark-badge.svg"
 
-# 3. Javadocs Download (github logo, grey|green)
-curl -sL "https://img.shields.io/badge/Javadocs-Download-grey%7C${GREEN}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/javadocs-badge.svg"
+# 3. Javadocs Download (github logo, accent color)
+curl -sL "https://img.shields.io/badge/Javadocs-Download-${ACCENT}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/javadocs-badge.svg"
 
-# 4. Installer Download (github logo, grey|green)
-curl -sL "https://img.shields.io/badge/Installer-v${VERSION}-grey%7C${GREEN}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/installer-badge.svg"
+# 4. Installer Download (github logo, accent color)
+curl -sL "https://img.shields.io/badge/Installer-v${VERSION}-${ACCENT}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/installer-badge.svg"
 
-# 5. Update zip Download (github logo, grey|green)
-curl -sL "https://img.shields.io/badge/Update%20zip-v${VERSION}-grey%7C${GREEN}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/update-badge.svg"
+# 5. Update zip Download (github logo, accent color)
+curl -sL "https://img.shields.io/badge/Update%20zip-v${VERSION}-${ACCENT}?logo=github&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/update-badge.svg"
 
 # 6. AppImage Guide (appimage logo white, blue)
 curl -sL "https://img.shields.io/badge/AppImage-Guide-${BLUE}?logo=appimage&logoColor=white&style=${STYLE}&height=${HEIGHT}" > "${SCRIPT_DIR}/appimage-badge.svg"
