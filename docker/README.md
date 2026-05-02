@@ -27,6 +27,21 @@ Then open http://127.0.0.1:7667 in your browser. The I2NP external port is assig
 ### Memory usage
 By default the image limits the memory available to the Java heap to 512MB. You can override this at runtime with the `-e JVM_XMX=1024m` flag, or by modifying the `JVM_XMX` environment variable in the `docker/rootfs/startapp.sh` file before building.
 
+### Security
+The container runs as a non-root user `i2p` (UID 1000) for security. If you need to exec into the container for debugging, note that you are running as user `i2p`.
+
+### Healthcheck
+The image includes a HEALTHCHECK that monitors the router every 5 minutes. You can verify container health with:
+```bash
+docker inspect --format='{{.State.Health.Status}}' i2pplus
+```
+
+### Read-only root filesystem
+For enhanced security, you can run with a read-only root filesystem:
+```bash
+docker run --read-only --tmpfs /i2p/.i2p:rw --tmpfs /i2psnark:rw ...
+```
+
 ### Ports
 There are several ports which are exposed by the image. You can choose which ones to publish depending on your specific needs.
 
