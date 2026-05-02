@@ -49,6 +49,19 @@ EXPOSE 7654 7656 7657 7658 4444 6668 7659 7660 7667 12345
 # Switch to i2p user
 USER i2p
 
+# Healthcheck - verify router is responsive
+HEALTHCHECK --interval=5m --timeout=30s --start-period=2m --retries=3 \
+    CMD wget -q -O- http://localhost:7657/jsp/status.jsp || exit 1
+
+# Resource limits
+# Memory limit is set via JVM_XMX in startapp.sh (default 512m)
+# Additional ulimits for file operations
+SHELL ["/bin/sh", "-c"]
+RUN ulimit -n 65536
+
+# DC6: For read-only root filesystem, use at runtime:
+# docker run --read-only --tmpfs /i2p/.i2p:rw --tmpfs /i2psnark:rw ...
+
 # Metadata
 LABEL \
  org.label-schema.name="i2p" \
