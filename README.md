@@ -1,4 +1,3 @@
-[![CodeQL](https://github.com/I2PPlus/i2pplus/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/codeql-analysis.yml)
 [![Java CI](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml/badge.svg)](https://github.com/I2PPlus/i2pplus/actions/workflows/ant.yml)
 [![Docker](tools/badges/docker-badge.svg)](docker/README.md)
 [![I2P+ Update zip](tools/badges/update-badge.svg)](https://i2pplus.github.io/i2pupdate.zip)
