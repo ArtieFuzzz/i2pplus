@@ -59,10 +59,6 @@ class IntroductionManager {
      */
     public static final int MAX_OUTBOUND = 200;
 
-    /** Max one per target in this time */
-    private static final long PUNCH_CLEAN_TIME = 5*1000;
-    /** Max for all targets per PUNCH_CLEAN_TIME */
-    private static final int MAX_PUNCHES = 20;
     private static final long INTRODUCER_EXPIRATION = 80*60*1000L;
     private static final String MIN_IPV6_INTRODUCER_VERSION = "0.9.50";
     private static final long MAX_SKEW = 2*60*1000;
@@ -75,7 +71,7 @@ class IntroductionManager {
         _outbound = new ConcurrentHashMap<Long, PeerState>(MAX_OUTBOUND);
         _inbound = new ConcurrentHashMap<Long, PeerState>(MAX_INBOUND);
         _nonceToAlice = new ConcurrentHashMap<Long, PeerState2>(MAX_INBOUND);
-        _recentRelaysAsBob = new LHMCache<Long, Object>(8);
+        _recentRelaysAsBob = new LHMCache<Long, Object>(64);
         ctx.statManager().createRateStat("udp.relayBadIP", "Received IP or port was bad", "Transport [UDP]", UDPTransport.RATES);
     }
 

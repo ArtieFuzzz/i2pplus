@@ -227,6 +227,7 @@ public class ConfigClientsHandler extends FormHandler {
                    _action.toLowerCase(Locale.US).endsWith("</span>")) {
             // IE sucks
             String app = _action.substring(xStart.length() + 18, _action.length() - 7);
+            app = DataHelper.stripHTML(app);
             int appnum = -1;
             try {
                 appnum = Integer.parseInt(app);

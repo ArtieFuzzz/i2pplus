@@ -3,7 +3,7 @@ set -e
 set -u
 
 # Default JVM heap size
-if [ -z "$JVM_XMX" ]; then
+if [ -z "${JVM_XMX:-}" ]; then
     echo "[startapp] Using the default 512MB JVM heap limit for I2P+..."
     echo "[startapp] To configure a different maximum value, change the JVM_XMX"
     echo "[startapp] variable value in startapp.sh (for example JVM_XMX=1024m)"
@@ -38,7 +38,7 @@ export CLASSPATH
 # Configure IP address based on container environment
 if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
     echo "[startapp] Running I2P+ in docker container"
-    if [ -z "$IP_ADDR" ]; then
+    if [ -z "${IP_ADDR:-}" ]; then
         export IP_ADDR=$(hostname -i)
         echo ""
         echo "[startapp] Note: To access I2P+ from other computers on your lan, set IP_ADDR to this host's lan ip,"
