@@ -47,8 +47,11 @@ public class NSEC extends Data {
 
     public static NSEC parse(DataInputStream dis, byte[] data, int length) throws IOException {
         DnsName next = DnsName.parse(dis, data);
-
-        byte[] typeBitmap = new byte[length - next.size()];
+        int bitmapLength = length - next.size();
+        if (bitmapLength < 0) {
+            throw new IOException("Invalid NSEC record: length mismatch");
+        }
+        byte[] typeBitmap = new byte[bitmapLength];
         if (dis.read(typeBitmap) != typeBitmap.length) throw new IOException();
         List<TYPE> types = readTypeBitMap(typeBitmap);
         return new NSEC(next, types);

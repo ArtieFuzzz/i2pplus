@@ -449,7 +449,7 @@ public final class DnsName implements CharSequence, Serializable, Comparable<Dns
      * @throws IllegalStateException on cycles or excessive depth.
      */
     private static final int MAX_DNS_DEPTH = 128;
-    private static DnsName parse(byte[] data, int offset, HashSet<Integer> jumps, int depth) throws IllegalStateException {
+    private static DnsName parse(byte[] data, int offset, HashSet<Integer> jumps, int depth) throws IllegalStateException, IOException {
         if (depth > MAX_DNS_DEPTH) {
             throw new IllegalStateException("Maximum DNS name depth exceeded.");
         }
@@ -466,6 +466,9 @@ public final class DnsName implements CharSequence, Serializable, Comparable<Dns
             return DnsName.ROOT;
         }
 
+        if (offset + 1 + c > data.length) {
+            throw new IOException("Truncated DNS name pointer");
+        }
         String childLabelString = new String(data, offset + 1, c, StandardCharsets.US_ASCII);
         DnsName child = new DnsName(childLabelString);
 

@@ -118,7 +118,11 @@ public class NSEC3 extends Data {
         int hashLength = dis.readUnsignedByte();
         byte[] nextHashed = new byte[hashLength];
         if (dis.read(nextHashed) != nextHashed.length) throw new IOException();
-        byte[] typeBitmap = new byte[length - (6 + saltLength + hashLength)];
+        int bitmapLength = length - (6 + saltLength + hashLength);
+        if (bitmapLength < 0) {
+            throw new IOException("Invalid NSEC3 record: length mismatch");
+        }
+        byte[] typeBitmap = new byte[bitmapLength];
         if (dis.read(typeBitmap) != typeBitmap.length) throw new IOException();
         List<TYPE> types = NSEC.readTypeBitMap(typeBitmap);
         return new NSEC3(hashAlgorithm, flags, iterations, salt, nextHashed, types);

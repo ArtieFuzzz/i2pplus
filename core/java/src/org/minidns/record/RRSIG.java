@@ -90,6 +90,9 @@ public class RRSIG extends Data {
         int keyTag = dis.readUnsignedShort();
         DnsName signerName = DnsName.parse(dis, data);
         int sigSize = length - signerName.size() - 18;
+        if (sigSize < 0) {
+            throw new IOException("Invalid RRSIG record: length mismatch");
+        }
         byte[] signature = new byte[sigSize];
         if (dis.read(signature) != signature.length) throw new IOException();
         return new RRSIG(typeCovered, null, algorithm, labels, originalTtl, signatureExpiration, signatureInception, keyTag, signerName, signature);

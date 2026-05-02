@@ -31,16 +31,24 @@ public class InetAddressUtil {
      * @throws IllegalArgumentException if the input is not a valid IPv4 address
      */
     public static Inet4Address ipv4From(CharSequence cs) {
-        InetAddress inetAddress;
+        String ip = cs.toString();
+        if (!IPV4_PATTERN.matcher(ip).matches()) {
+            throw new IllegalArgumentException("Invalid IPv4 address: " + ip);
+        }
         try {
-            inetAddress = InetAddress.getByName(cs.toString());
+            return (Inet4Address) InetAddress.getByAddress(null, parseIPv4(ip));
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException(e);
         }
-        if (inetAddress instanceof Inet4Address) {
-            return (Inet4Address) inetAddress;
+    }
+
+    private static byte[] parseIPv4(String ip) {
+        String[] parts = ip.split("\\.");
+        byte[] addr = new byte[4];
+        for (int i = 0; i < 4; i++) {
+            addr[i] = (byte) Integer.parseInt(parts[i]);
         }
-        throw new IllegalArgumentException();
+        return addr;
     }
 
     /**
@@ -51,16 +59,30 @@ public class InetAddressUtil {
      * @throws IllegalArgumentException if the input is not a valid IPv6 address
      */
     public static Inet6Address ipv6From(CharSequence cs) {
-        InetAddress inetAddress;
+        String ip = cs.toString();
+        if (!IPV6_PATTERN.matcher(ip).matches()) {
+            throw new IllegalArgumentException("Invalid IPv6 address: " + ip);
+        }
         try {
-            inetAddress = InetAddress.getByName(cs.toString());
+            return (Inet6Address) InetAddress.getByAddress(null, parseIPv6(ip));
         } catch (UnknownHostException e) {
             throw new IllegalArgumentException(e);
         }
-        if (inetAddress instanceof Inet6Address) {
-            return (Inet6Address) inetAddress;
+    }
+
+    private static byte[] parseIPv6(String ip) {
+        String[] parts = ip.split(":", -1);
+        byte[] addr = new byte[16];
+        int idx = 0;
+        for (String part : parts) {
+            if (part.isEmpty()) {
+                continue;
+            }
+            int val = Integer.parseInt(part, 16);
+            addr[idx++] = (byte) (val >> 8);
+            addr[idx++] = (byte) val;
         }
-        throw new IllegalArgumentException();
+        return addr;
     }
 
     // IPV4_REGEX from http://stackoverflow.com/a/46168/194894 by Kevin Wong (http://stackoverflow.com/users/4792/kevin-wong) licensed under

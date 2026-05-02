@@ -84,6 +84,9 @@ public class DNSKEY extends Data {
     private transient Integer keyTag;
 
     public static DNSKEY parse(DataInputStream dis, int length) throws IOException {
+        if (length < 4) {
+            throw new IOException("Invalid DNSKEY record: length too short");
+        }
         short flags = dis.readShort();
         byte protocol = dis.readByte();
         byte algorithm = dis.readByte();
