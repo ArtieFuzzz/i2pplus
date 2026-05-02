@@ -25,6 +25,13 @@ COPY --from=builder /tmp/build/pkg-temp .
 COPY docker/rootfs/ /
 RUN chmod +x /startapp.sh
 
+# Create i2p user and group
+RUN addgroup -g 1000 i2p && \
+    adduser -D -u 1000 -G i2p -s /bin/sh i2p
+
+# Set ownership for i2p user
+RUN chown -R i2p:i2p ${APP_HOME}
+
 # Configure I2P+ to use random port (0=random) - override with --build-arg or -e at runtime
 # ensure this port is port-forwarded and unfirewalled as required,
 # otherwise your router will run in firewalled mode
@@ -38,6 +45,9 @@ VOLUME ["${APP_HOME}/.i2p"]
 VOLUME ["/i2psnark"]
 
 EXPOSE 7654 7656 7657 7658 4444 6668 7659 7660 7667 12345
+
+# Switch to i2p user
+USER i2p
 
 # Metadata
 LABEL \
