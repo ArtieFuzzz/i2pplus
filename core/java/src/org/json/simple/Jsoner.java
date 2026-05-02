@@ -284,7 +284,8 @@ public class Jsoner {
             readable = new StringReader(deserializable);
             returnable = Jsoner.deserialize(readable, EnumSet.of(DeserializationOptions.ALLOW_JSON_ARRAYS)).<JsonArray>getCollection(0);
         } catch (NullPointerException | DeserializationException caught) {
-            /* Don't care, just return the default value. */
+            // Log the exception instead of silently swallowing
+            System.err.println("Jsoner.deserialize(JsonArray) failed: " + caught.getMessage());
             returnable = defaultValue;
         } finally {
             if (readable != null) {
@@ -308,7 +309,8 @@ public class Jsoner {
             readable = new StringReader(deserializable);
             returnable = Jsoner.deserialize(readable, EnumSet.of(DeserializationOptions.ALLOW_JSON_OBJECTS)).<JsonObject>getMap(0);
         } catch (NullPointerException | DeserializationException caught) {
-            /* Don't care, just return the default value. */
+            // Log the exception instead of silently swallowing
+            System.err.println("Jsoner.deserialize(JsonObject) failed: " + caught.getMessage());
             returnable = defaultValue;
         } finally {
             if (readable != null) {

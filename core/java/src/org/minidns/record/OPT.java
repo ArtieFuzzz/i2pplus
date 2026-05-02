@@ -54,8 +54,9 @@ public class OPT extends Data {
                 EdnsOption ednsOption = EdnsOption.parse(optionCode, optionData);
                 variablePart.add(ednsOption);
                 payloadLeft -= 2 + 2 + optionLength;
-                // Assert that payloadLeft never becomes negative
-                assert payloadLeft >= 0;
+                if (payloadLeft < 0) {
+                    throw new IOException("Invalid OPT record: payload length mismatch");
+                }
             }
         }
         return new OPT(variablePart);

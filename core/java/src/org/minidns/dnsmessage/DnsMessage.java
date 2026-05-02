@@ -403,20 +403,22 @@ public class DnsMessage {
         int answerCount = dis.readUnsignedShort();
         int nameserverCount = dis.readUnsignedShort();
         int additionalResourceRecordCount = dis.readUnsignedShort();
-        questions = new ArrayList<>(questionCount);
-        for (int i = 0; i < questionCount; i++) {
+        // Limit counts to prevent memory exhaustion from malicious packets
+        int maxRecords = 1000;
+        questions = new ArrayList<>(Math.min(questionCount, maxRecords));
+        for (int i = 0; i < Math.min(questionCount, maxRecords); i++) {
             questions.add(new Question(dis, data));
         }
-        answerSection = new ArrayList<>(answerCount);
-        for (int i = 0; i < answerCount; i++) {
+        answerSection = new ArrayList<>(Math.min(answerCount, maxRecords));
+        for (int i = 0; i < Math.min(answerCount, maxRecords); i++) {
             answerSection.add(Record.parse(dis, data));
         }
-        authoritySection = new ArrayList<>(nameserverCount);
-        for (int i = 0; i < nameserverCount; i++) {
+        authoritySection = new ArrayList<>(Math.min(nameserverCount, maxRecords));
+        for (int i = 0; i < Math.min(nameserverCount, maxRecords); i++) {
             authoritySection.add(Record.parse(dis, data));
         }
-        additionalSection = new ArrayList<>(additionalResourceRecordCount);
-        for (int i = 0; i < additionalResourceRecordCount; i++) {
+        additionalSection = new ArrayList<>(Math.min(additionalResourceRecordCount, maxRecords));
+        for (int i = 0; i < Math.min(additionalResourceRecordCount, maxRecords); i++) {
             additionalSection.add(Record.parse(dis, data));
         }
         optRrPosition = getOptRrPosition(additionalSection);

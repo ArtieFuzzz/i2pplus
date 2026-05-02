@@ -423,7 +423,7 @@ public final class DnsName implements CharSequence, Serializable, Comparable<Dns
             c = ((c & 0x3f) << 8) + dis.readUnsignedByte();
             HashSet<Integer> jumps = new HashSet<Integer>();
             jumps.add(c);
-            return parse(data, c, jumps);
+            return parse(data, c, jumps, 0);
         }
         if (c == 0) {
             return DnsName.ROOT;
@@ -444,10 +444,15 @@ public final class DnsName implements CharSequence, Serializable, Comparable<Dns
      * @param data   The raw data.
      * @param offset The offset.
      * @param jumps  The list of jumps (by now).
+     * @param depth  Current recursion depth.
      * @return The parsed domain name.
-     * @throws IllegalStateException on cycles.
+     * @throws IllegalStateException on cycles or excessive depth.
      */
-    private static DnsName parse(byte[] data, int offset, HashSet<Integer> jumps) throws IllegalStateException {
+    private static final int MAX_DNS_DEPTH = 128;
+    private static DnsName parse(byte[] data, int offset, HashSet<Integer> jumps, int depth) throws IllegalStateException {
+        if (depth > MAX_DNS_DEPTH) {
+            throw new IllegalStateException("Maximum DNS name depth exceeded.");
+        }
         int c = data[offset] & 0xff;
         if ((c & 0xc0) == 0xc0) {
             c = ((c & 0x3f) << 8) + (data[offset + 1] & 0xff);
@@ -455,7 +460,7 @@ public final class DnsName implements CharSequence, Serializable, Comparable<Dns
                 throw new IllegalStateException("Cyclic offsets detected.");
             }
             jumps.add(c);
-            return parse(data, c, jumps);
+            return parse(data, c, jumps, depth + 1);
         }
         if (c == 0) {
             return DnsName.ROOT;
@@ -464,7 +469,7 @@ public final class DnsName implements CharSequence, Serializable, Comparable<Dns
         String childLabelString = new String(data, offset + 1, c, StandardCharsets.US_ASCII);
         DnsName child = new DnsName(childLabelString);
 
-        DnsName parent = parse(data, offset + 1 + c, jumps);
+        DnsName parent = parse(data, offset + 1 + c, jumps, depth + 1);
         return DnsName.from(child, parent);
     }
 

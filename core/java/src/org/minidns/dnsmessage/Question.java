@@ -62,9 +62,9 @@ public class Question {
     }
 
     public Question(DnsName name, TYPE type, CLASS clazz, boolean unicastQuery) {
-        assert name != null;
-        assert type != null;
-        assert clazz != null;
+        if (name == null || type == null || clazz == null) {
+            throw new IllegalArgumentException("Name, type, and class must not be null");
+        }
         this.name = name;
         this.type = type;
         this.clazz = clazz;

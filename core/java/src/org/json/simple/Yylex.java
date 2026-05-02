@@ -317,8 +317,13 @@ class Yylex {
 
         /* is the buffer big enough? */
         if (zzCurrentPos >= zzBuffer.length) {
-            /* if not: blow it up */
-            char newBuffer[] = new char[zzCurrentPos * 2];
+            /* if not: blow it up, but respect maximum size to prevent DoS */
+            int maxBufferSize = 16 * 1024 * 1024; // 16MB
+            if (zzBuffer.length >= maxBufferSize) {
+                throw new java.io.IOException("Maximum lexer buffer size exceeded");
+            }
+            int newSize = Math.min(zzCurrentPos * 2, maxBufferSize);
+            char newBuffer[] = new char[newSize];
             System.arraycopy(zzBuffer, 0, newBuffer, 0, zzBuffer.length);
             zzBuffer = newBuffer;
         }

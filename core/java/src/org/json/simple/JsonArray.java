@@ -203,9 +203,23 @@ public class JsonArray extends ArrayList<Object> implements Jsonable {
             }
         }
         /* Use the package/class and enum names to get the Enum<T>. */
-        returnType = (Class<T>) Class.forName(returnTypeName.toString());
+        String className = returnTypeName.toString();
+        if (!isValidClassName(className)) {
+            throw new ClassNotFoundException("Invalid class name: " + className);
+        }
+        returnType = (Class<T>) Class.forName(className);
         returnable = Enum.valueOf(returnType, enumName.toString());
         return returnable;
+    }
+
+    private static boolean isValidClassName(String className) {
+        if (className == null || className.isEmpty()) {
+            return false;
+        }
+        if (className.contains("..") || className.contains("/") || className.contains("\\")) {
+            return false;
+        }
+        return className.matches("^[a-zA-Z_][a-zA-Z0-9_$.]*$");
     }
 
     /** A convenience method that assumes there is a Number or String value at the given index.

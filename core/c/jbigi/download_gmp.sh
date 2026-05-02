@@ -15,6 +15,48 @@ export GMP_TAR="gmp-$GMP_TARVER.tar.bz2"
 export GMP_TAR_MIRROR="https://ftp.gnu.org/gnu/gmp/" # This mirror works
 #export GMP_TAR_MIRROR="https://gmplib.org/download/gmp/" #This is the upstream, but they have an expired TLS certificate.
 
+VERIFY_GMP=true
+
+download_sig()
+{
+  if [ $(which wget) ]; then
+    wget -N --progress=dot "${GMP_TAR_MIRROR}${GMP_TAR}.sig"
+  elif [ $(which curl) ]; then
+    curl -LO "${GMP_TAR_MIRROR}${GMP_TAR}.sig"
+  fi
+}
+
+verify_tar()
+{
+  if [ "$VERIFY_GMP" != "true" ]; then
+    echo "Skipping GMP verification (VERIFY_GMP=false)"
+    return 0
+  fi
+  if ! command -v gpg >/dev/null 2>&1; then
+    echo "WARNING: gpg not found, cannot verify tarball signature" >&2
+    return 0
+  fi
+  if [ ! -f "${GMP_TAR}.sig" ]; then
+    echo "WARNING: Signature file not found, downloading..." >&2
+    download_sig
+  fi
+  if [ -f "${GMP_TAR}.sig" ]; then
+    echo "Verifying GMP tarball signature..."
+    # Import GNU keyring if not already done
+    gpg --keyserver keyserver.ubuntu.com --recv-keys 0x<KEY> 2>/dev/null || true
+    if gpg --verify "${GMP_TAR}.sig" "${GMP_TAR}" 2>/dev/null; then
+      echo "GMP tarball signature verified successfully"
+      return 0
+    else
+      echo "WARNING: Signature verification failed, checksums may not match!" >&2
+      return 1
+    fi
+  else
+    echo "WARNING: Could not download signature file, skipping verification" >&2
+    return 0
+  fi
+}
+
 download_tar()
 {
   GMP_TAR_URL="${GMP_TAR_MIRROR}${GMP_TAR}"
@@ -56,6 +98,11 @@ extract_tar()
 
 if [ ! -d "$GMP_DIR" -a ! -e "$GMP_TAR" ]; then
   download_tar
+  if ! verify_tar; then
+    echo "ERROR: GMP verification failed, aborting" >&2
+    rm -f "${GMP_TAR}" "${GMP_TAR}.sig"
+    exit 1
+  fi
 fi
 
 if [ ! -d "$GMP_DIR" ]; then
