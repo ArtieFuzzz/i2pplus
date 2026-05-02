@@ -1443,6 +1443,12 @@ public class UDPTransport extends TransportImpl {
             }
         }
         if (changeIt) {
+            // TODO: NT3 - add network diversity check to prevent colluding peers on same network
+            // from falsely confirming our IP address. Verify confirming peer is on different
+            // network type (private vs public) than first peer using TransportUtil.isPubliclyRoutable().
+            if (_log.shouldWarn())
+                _log.warn("[" + from.toBase64().substring(0,6) + "] and [" + lastFrom.toBase64().substring(0,6) + "] agree we have a new IP address: "
+                          + Addresses.toString(ourIP, ourPort) + " - WARNING: network diversity not verified");
             if (_log.shouldInfo())
                 _log.info("[" + from.toBase64().substring(0,6) + "] and [" + lastFrom.toBase64().substring(0,6) + "] agree we have a new IP address: "
                           + Addresses.toString(ourIP, ourPort) + " -> Updating...");
