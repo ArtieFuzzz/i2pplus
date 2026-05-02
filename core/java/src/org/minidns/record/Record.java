@@ -336,6 +336,10 @@ public final class Record<D extends Data> {
         boolean unicastQuery = (clazzValue & 0x8000) > 0;
         long ttl = (((long) dis.readUnsignedShort()) << 16) + dis.readUnsignedShort();
         int payloadLength = dis.readUnsignedShort();
+        // Limit payload size to prevent memory exhaustion DoS
+        if (payloadLength < 0 || payloadLength > 65535) {
+            throw new IOException("Invalid payload length: " + payloadLength);
+        }
         Data payloadData;
         switch (type) {
             case SOA: payloadData = SOA.parse(dis, data);
