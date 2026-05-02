@@ -51,14 +51,11 @@ if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
     echo "[startapp] Note that your browser may warn you about the site certificate which is self-signed."
     echo ""
 
-    # Update configuration files with the new IP (only for non-listener configs)
-    # Keep listeners on 127.0.0.1 for security, only change hostname references
-    for config_file in $(find . -name '*.config'); do
-        if [ -f "$config_file" ]; then
-            # Only replace localhost, not 127.0.0.1 (keep loopback binding)
-            sed -i "s/localhost/$IP_ADDR/g" "$config_file"
-        fi
-    done
+    # Update configuration files with the new IP (only for console, not listeners)
+    # Keep listeners on 127.0.0.1 for security - only update console hostname
+    if [ -f "i2pconsole.config" ]; then
+        sed -i "s/localhost/$IP_ADDR/g" "i2pconsole.config"
+    fi
 
     # Override external port if EXTERNAL_PORT env var is set (runtime override)
     if [ -n "${EXTERNAL_PORT:-}" ] && [ "${EXTERNAL_PORT:-}" != "0" ]; then
