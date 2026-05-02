@@ -39,7 +39,7 @@ export CLASSPATH
 if [ -f /.dockerenv ] || [ -f /run/.containerenv ]; then
     echo "[startapp] Running I2P+ in docker container"
     if [ -z "${IP_ADDR:-}" ]; then
-        export IP_ADDR=$(hostname -i)
+        export IP_ADDR=$(hostname -I | awk '{print $1}')
         echo ""
         echo "[startapp] Note: To access I2P+ from other computers on your lan, set IP_ADDR to this host's lan ip,"
         echo "[startapp] or 0.0.0.0 for access from anywhere - make sure your firewall permissions prevent access"
